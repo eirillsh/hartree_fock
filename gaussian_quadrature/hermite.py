@@ -1,4 +1,4 @@
-from .gaussion_quadrature import Gaussian_Quadrature
+from .gaussian_quadrature import Gaussian_Quadrature
 import numpy as np
 
 class Hermite(Gaussian_Quadrature):
