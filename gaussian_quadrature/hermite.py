@@ -3,13 +3,13 @@ import numpy as np
 
 class Hermite(Gaussian_Quadrature):
 
-	def __init__(self, n_max, n=None):
+	def __init__(self, n):
 		self._sqrt_pi = np.sqrt(np.pi)
-		super().__init__(n_max, n=n, max_factorial=n_max)
+		super().__init__(n, 1, n, max_factorial=n)
 
 	def _create_polynomials(self):
 		polynomial = [np.array([1], dtype=int), np.array([2, 0], dtype=int)]
-		for n in range(1, self.n_max):
+		for n in range(1, self.n):
 			H_next = np.zeros(n+2, dtype=int)
 			H_next[:-1]  += polynomial[n] 
 			H_next[2:] -= n*polynomial[n-1]
@@ -23,9 +23,6 @@ class Hermite(Gaussian_Quadrature):
 
 	def integral(self, n):
 		return ((1 << n)*self._factorial[n])*self._sqrt_pi
-
-	def within_bounds(self, n):
-		return 0 < n <= self._n_max 
 
 	def integration_limits(self):
 		return "(-inf, inf)"

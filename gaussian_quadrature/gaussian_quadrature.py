@@ -1,20 +1,21 @@
 import numpy as np
 
 class Gaussian_Quadrature:
-	def __init__(self, n_max, n=None, max_factorial=0):
+	def __init__(self, n, n_min, n_max, max_factorial=0):
+		self._n = n
+		self._n_min = n_min
 		self._n_max = n_max
 		self._create_factorial(max_factorial)
 		self.polynomial = self._create_polynomials()
-		if n == None:
-			self.set_n(n_max)
-		else:
-			self.set_n(n)
+		self._x = np.roots(self.polynomial[self._n])
+		self._w = self._create_weights()
+
 
 	def __call__(self, n, x):
 		return np.polyval(self.polynomial[n], x)
 
 	def set_n(self, n):
-		if self.within_bounds(n):
+		if self._n_min <= n <= self._n_max:
 			self._n = n
 			self._x = np.roots(self.polynomial[self._n])
 			self._w = self._create_weights()
@@ -59,6 +60,10 @@ class Gaussian_Quadrature:
 	@property
 	def n_max(self):
 		return self._n_max
+
+	@property
+	def n_min(self):
+		return self._n_min
 
 	def within_bounds(self, n):
 		raise NotImplementedError("Gaussian Quadrature needs limits for n")
