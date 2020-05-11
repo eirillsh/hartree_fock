@@ -1,0 +1,41 @@
+$\langle 11|V|11\rangle  =$& $ (5Z)/8 $ &$\langle 11|V|12\rangle  =$& $ (4096\sqrt{2}Z)/64827$ \\
+$\langle 11|V|13\rangle  =$& $ (1269\sqrt{3}Z)/50000$ &$\langle 11|V|21\rangle  =$& $ (4096\sqrt{2}Z)/64827$ \\
+$\langle 11|V|22\rangle  =$& $ (16Z)/729$ & $\langle 11|V|23\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 11|V|31\rangle  =$& $ (1269\sqrt{3}Z)/50000$ &$\langle 11|V|32\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 11|V|33\rangle  =$& $ (189Z)/32768$ & $\langle 12|V|11\rangle  =$& $ (4096\sqrt{2}Z)/64827$ \\
+$\langle 12|V|12\rangle  =$& $ (17Z)/81$ &$\langle 12|V|13\rangle  =$& $ (1555918848\sqrt{6}Z)/75429903125$ \\
+$\langle 12|V|21\rangle  =$& $ (16Z)/729$ &$\langle 12|V|22\rangle  =$& $ (512\sqrt{2}Z)/84375$ \\
+$\langle 12|V|23\rangle  =$& $ (2160\sqrt{3}Z)/823543$ &$\langle 12|V|31\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 12|V|32\rangle  =$& $ (29943\sqrt{3}Z)/13176688$ &$\langle 12|V|33\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 13|V|11\rangle  =$& $ (1269\sqrt{3}Z)/50000$ &$\langle 13|V|12\rangle  =$& $ (1555918848\sqrt{6}Z)/75429903125$ \\
+$\langle 13|V|13\rangle  =$& $ (815Z)/8192$ & $\langle 13|V|21\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 13|V|22\rangle  =$& $ (2160\sqrt{3}Z)/823543$ & $\langle 13|V|23\rangle  =$& $ (37826560\sqrt{2}Z)/22024729467$ \\
+$\langle 13|V|31\rangle  =$& $ (189Z)/32768$ & $\langle 13|V|32\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 13|V|33\rangle  =$& $ (617Z)/(314928\sqrt{3})$ &$\langle 21|V|11\rangle  =$& $ (4096\sqrt{2}Z)/64827$ \\
+$\langle 21|V|12\rangle  =$& $ (16Z)/729$ & $\langle 21|V|13\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 21|V|21\rangle  =$& $ (17Z)/81$ & $\langle 21|V|22\rangle  =$& $ (512\sqrt{2}Z)/84375$ \\
+$\langle 21|V|23\rangle  =$& $ (29943\sqrt{3}Z)/13176688$ & $\langle 21|V|31\rangle  =$& $ (1555918848\sqrt{6}Z)/75429903125$ \\
+$\langle 21|V|32\rangle  =$& $ (2160\sqrt{3}Z)/823543$ & $\langle 21|V|33\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 22|V|11\rangle  =$& $ (16Z)/729$ & $\langle 22|V|12\rangle  =$& $ (512\sqrt{2}Z)/84375$ \\
+$\langle 22|V|13\rangle  =$& $ (2160\sqrt{3}Z)/823543$ & $\langle 22|V|21\rangle  =$& $ (512\sqrt{2}Z)/84375$ \\
+$\langle 22|V|22\rangle  =$& $ (77Z)/512$ & $\langle 22|V|23\rangle  =$& $ (5870679552\sqrt{6}Z)/669871503125$ \\
+$\langle 22|V|31\rangle  =$& $ (2160\sqrt{3}Z)/823543$ & $\langle 22|V|32\rangle  =$& $ (5870679552\sqrt{6}Z)/669871503125$ \\
+$\langle 22|V|33\rangle  =$& $ (73008Z)/9765625$ & $\langle 23|V|11\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 23|V|12\rangle  =$& $ (2160\sqrt{3}Z)/823543$ & $\langle 23|V|13\rangle  =$& $ (37826560\sqrt{2}Z)/22024729467$ \\
+$\langle 23|V|21\rangle  =$& $ (29943\sqrt{3}Z)/13176688$ & $\langle 23|V|22\rangle  =$& $ (5870679552\sqrt{6}Z)/669871503125$ \\
+$\langle 23|V|23\rangle  =$& $ (32857Z)/390625$ & $\langle 23|V|31\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 23|V|32\rangle  =$& $ (73008Z)/9765625$ & $\langle 23|V|33\rangle  =$& $ (6890942464\sqrt{2/3}Z)/1210689028125$ \\
+$\langle 31|V|11\rangle  =$& $ (1269\sqrt{3}Z)/50000$ & $\langle 31|V|12\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 31|V|13\rangle  =$& $ (189Z)/32768$ & $\langle 31|V|21\rangle  =$& $ (1555918848\sqrt{6}Z)/75429903125$ \\
+$\langle 31|V|22\rangle  =$& $ (2160\sqrt{3}Z)/823543$ & $\langle 31|V|23\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 31|V|31\rangle  =$& $ (815Z)/8192$ & $\langle 31|V|32\rangle  =$& $ (37826560\sqrt{2}Z)/22024729467$ \\
+$\langle 31|V|33\rangle  =$& $ (617Z)/(314928\sqrt{3})$ & $\langle 32|V|11\rangle  =$& $ (110592\sqrt{6}Z)/24137569$ \\
+$\langle 32|V|12\rangle  =$& $ (29943\sqrt{3}Z)/13176688$ & $\langle 32|V|13\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 32|V|21\rangle  =$& $ (2160\sqrt{3}Z)/823543$ & $\langle 32|V|22\rangle  =$& $ (5870679552\sqrt{6}Z)/669871503125$ \\
+$\langle 32|V|23\rangle  =$& $ (73008Z)/9765625$ & $\langle 32|V|31\rangle  =$& $ (37826560\sqrt{2}Z)/22024729467$ \\
+$\langle 32|V|32\rangle  =$& $ (32857Z)/390625$ & $\langle 32|V|33\rangle  =$& $ (6890942464\sqrt{2/3}Z)/1210689028125$ \\
+$\langle 33|V|11\rangle  =$& $ (189Z)/32768$ & $\langle 33|V|12\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 33|V|13\rangle  =$& $ (617Z)/(314928\sqrt{3})$ & $\langle 33|V|21\rangle  =$& $ (1216512\sqrt{2}Z)/815730721$ \\
+$\langle 33|V|22\rangle  =$& $ (73008Z)/9765625$ & $\langle 33|V|23\rangle  =$& $ (6890942464\sqrt{2/3}Z)/1210689028125$ \\
+$\langle 33|V|31\rangle  =$& $ (617Z)/(314928\sqrt{3})$ &$\langle 33|V|32\rangle  =$& $ (6890942464\sqrt{2/3}Z)/1210689028125$ \\
+$\langle 33|V|33\rangle  =$& $ (17Z)/256$ & & \\ \hline

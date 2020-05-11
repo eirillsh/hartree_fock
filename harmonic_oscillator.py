@@ -23,7 +23,7 @@ class HarmonicOscillator:
 	def w(self):
 		return self._w
 	
-	def integrate(self, p, q, r, s):
+	def V(self, p, q, r, s):
 		# change to mesh later
 		x = y = self.H.x
 		w = self.H.w
@@ -44,7 +44,7 @@ class HarmonicOscillator:
 						r = np.sqrt(dx*dx + dy*dy)
 						if r != 0:
 							I += pr_i*qs_x[k]*qs_y[l]/r
-						I_fix += pr_i*qs_x[k]*qs_y[l]/(r if r != 0 else 1e-12)
+						I_fix += pr_i*qs_x[k]*qs_y[l]/(r if r != 0 else 1e-16)
 
 		print(I, I_fix)			
 		return I
