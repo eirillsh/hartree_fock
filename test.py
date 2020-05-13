@@ -88,10 +88,19 @@ test_V_AS()
 #------TESTING HARTREE-FOCK------
 
 
-def test_coeff_matrix(N):
+def test_coeff_matrix(basis, N):
+	HF = HartreeFock(basis, N)
+	HF.solve()
+	C = HF.C
+	norm = np.linalg.norm(C@C.T - np.identity(HF.basis.N))
+	print(f"\t|C@C.T - I| = {norm:.4g} when using {basis} AOs with {N} electrons.")
+	assert norm < 1e-12, "|C@C.T - I| should be zero. Test of HF failed"
 
-	pass
 
+print("\nTesting Hartree-Fock")
+
+test_coeff_matrix(HydrogenOrbital(2), 2)
+test_coeff_matrix(HydrogenOrbital(4), 4)
 
 
 

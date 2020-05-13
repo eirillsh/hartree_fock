@@ -52,6 +52,11 @@ class HydrogenOrbital:
 						self._V_AS[p, q+1, s+1, r] = -Vpqrs
 
 
+	def __str__(self):
+		return "Hydrogen-like"
+
+	def __repr__(self):
+		return "Hydrogen-like"
 
 
 	def V(self, p, q, r, s):
