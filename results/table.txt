@@ -1,0 +1,7 @@
+Bonding Energy:
+		$\mathrm{He}$ & -2.7500 & -2.8311 & -2.8327 & -2.904\\
+		$\mathrm{Be}$ & -13.716 & -14.508 & -14.510 & -14.67
+
+Relative errors:
+		$\mathrm{He} $ & 2.51  & 2.46 \\
+		$\mathrm{Be} $ & 1.10 & 1.09 
