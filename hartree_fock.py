@@ -24,20 +24,12 @@ class HartreeFock:
 
 	def solve(self, tol=1e-12):
 		E_prev, self._C = np.linalg.eigh(self.Fock_matrix())
-		#print(self.energy())
 		E, self._C = np.linalg.eigh(self.Fock_matrix())
-		#print(self.energy())
-		#print(E)
-
 		counter = 0
 		while (self.MSE(E_prev, E) > tol):
 			E_prev = E
 			E, self._C = np.linalg.eigh(self.Fock_matrix())
-			#print(self.energy())
 			counter += 1
-
-		#print(f"counter = {counter}")
-		#print(E)
 		self.E = E
 		return counter
 

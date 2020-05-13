@@ -16,7 +16,7 @@ class HarmonicOscillator:
 		Hny = self.H(self.ny[i], self.sqrt_w*y)
 		return Hnx*Hny*np.exp(-self.w*(x*x + y*y)/2.0)
 
-	def E(self, i):
+	def energy(self, i):
 		return (self.nx[i] + self.ny[i] + 1)*self.w
 
 	@property
@@ -73,8 +73,7 @@ class HarmonicOscillator:
 		for i in range(self.num_shells):
 			start = self.shells[i]
 			end = (start + self.shells[i+1])//2
-
-			print("%3d | %.2lf |  " %(i+1, self.E(start)/self._w), end="");
+			print("%3d | %.2lf |  " %(i+1, self.energy(start)/self._w), end="");
 			for j in range(start, end):
 				print("(%d, %d) " %(self.nx[j], self.ny[j]), end="")
 			print()
@@ -85,8 +84,24 @@ class HarmonicOscillator:
 		for i in range(self.num_shells):
 			start = self.shells[i]
 			end = self.shells[i+1]
-			print("%3d | %.2lf |  " %(i+1, self.E(start)/self._w), end="")
+			print("%3d | %.2lf |  " %(i+1, self.energy(start)/self._w), end="")
 			for j in range(start, end):
 				sign = "+" if self.spin[j] == 1 else "-"
 				print("(%d, %d)%s " %(self.nx[j], self.ny[j], sign), end="")
 			print()
+
+
+
+if __name__ == "__main__":
+	psi = HarmonicOscillator(2, 0.5)
+	psi.print_shells()
+	print()
+	psi.print_shells_full()
+
+	print("Integrate:")
+	print(psi.V(0, 0, 0, 0))
+
+
+	print((0+1) & 1)
+	print((1+1) & 1)
+	print((2+1) & 1)
