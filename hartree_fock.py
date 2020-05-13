@@ -22,11 +22,11 @@ class HartreeFock:
 		return 0.5*E + E0
 
 
-	def solve(self, tol=1e-12):
+	def solve(self, tol=1e-12, max_it=100):
 		E_prev, self._C = np.linalg.eigh(self.Fock_matrix())
 		E, self._C = np.linalg.eigh(self.Fock_matrix())
 		counter = 0
-		while (self.MSE(E_prev, E) > tol):
+		while (self.MSE(E_prev, E) > tol and counter < max_it):
 			E_prev = E
 			E, self._C = np.linalg.eigh(self.Fock_matrix())
 			counter += 1

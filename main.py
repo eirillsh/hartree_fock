@@ -1,6 +1,7 @@
 from hartree_fock import HartreeFock
 from moeller_plesset import MoellerPlesset as MøllerPlesset
 from hydrogen_like import HydrogenOrbital
+from harmonic_oscillator import HarmonicOscillator
 import numpy as np 
 
 print("\nHELIUM")
@@ -19,7 +20,6 @@ print(f"Hartree-Fock   energy is {HF}")
 
 
 
-
 print("\n\nBERYLLIUM")
 Z = 4
 orbitals = HydrogenOrbital(Z)
@@ -33,6 +33,10 @@ MP = Be.energy()
 print(f"Experimental   energy is -14.67")
 print(f"Møller-Plesset energy is {MP}")
 print(f"Hartree-Fock   energy is {HF}")
+
+
+
+
 
 
 
