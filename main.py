@@ -1,6 +1,6 @@
 from hartree_fock import HartreeFock
 from moeller_plesset import MoellerPlesset as MøllerPlesset
-from hydrogen_like import HydrogenOrbital
+from hydrogen_like import HydrogenLike
 import numpy as np 
 import matplotlib.pyplot as plt
 
@@ -37,24 +37,24 @@ def plot_AO_energies(basis, atom):
 		plt.ylabel(r"AO energy [a.u]", fontsize=17)
 	plt.tight_layout()
 	plt.savefig("results/AO_" + atom + ".pdf")
-	plt.show()
+	plt.close()
 
 
 with open("results/table.txt", "w") as outfile:
 	outfile.write("Bonding Energy:\n")
 	print("\nHELIUM")
 	Z = 2
-	orbitals = HydrogenOrbital(Z)
+	orbitals = HydrogenLike(Z)
 	He = HartreeFock(orbitals, Z)
-	He_phi = He.energy()
+	He_phi = He.bonding_energy()
 	print(f"Before HF      energy is {He_phi}")
 	He.solve()
-	He_HF = He.energy()
+	He_HF = He.bonding_energy()
 	print(f"Hartree-Fock   energy is {He_HF}")
 
 	He = MøllerPlesset(orbitals, Z)
 	He.solve()
-	He_MP = He.energy()
+	He_MP = He.bonding_energy()
 	print(f"Møller-Plesset energy is {He_MP}")
 	print(f"Experimental   energy is -2.904")
 	outfile.write("\t\t$\\mathrm{He}$ & %.4f & %.4f & %.4f & -2.904\\\\" % (He_phi, He_HF, He_MP))
@@ -62,45 +62,40 @@ with open("results/table.txt", "w") as outfile:
 
 	print("\n\nBERYLLIUM")
 	Z = 4
-	orbitals = HydrogenOrbital(Z)
+	orbitals = HydrogenLike(Z)
 	Be = HartreeFock(orbitals, Z)
-	Be_phi = Be.energy()
+	Be_phi = Be.bonding_energy()
 	print(f"Before HF      energy is {Be_phi}")
 	Be.solve()
-	Be_HF = Be.energy()
+	Be_HF = Be.bonding_energy()
 	print(f"Hartree-Fock   energy is {Be_HF}")
 
 	Be = MøllerPlesset(orbitals, Z)
 	Be.solve()
-	Be_MP = Be.energy()
+	Be_MP = Be.bonding_energy()
 	print(f"Møller-Plesset energy is {Be_MP}")
 	print(f"Experimental   energy is -14.67")
 	outfile.write("\n\t\t$\\mathrm{Be}$ & %.3f & %.3f & %.3f & -14.67" % (Be_phi, Be_HF, Be_MP))
 
-	outfile.write("\n\nRelative errors:\n")
+	#outfile.write("\n\nRelative errors:\n")
 	E = -2.904
 	HF = (E - He_HF)/E*100
 	MP = (E - He_MP)/E*100
-	outfile.write("\t\t$\\mathrm{He} $ & %.2f  & %.2f \\\\" % (HF, MP))
+	#outfile.write("\t\t$\\mathrm{He} $ & %.2f  & %.2f \\\\" % (HF, MP))
 	E = -14.67
 	HF = (E - Be_HF)/E*100
 	MP = (E - Be_MP)/E*100
-	outfile.write("\n\t\t$\\mathrm{Be} $ & %.2f & %.2f " % (HF, MP))
+	#outfile.write("\n\t\t$\\mathrm{Be} $ & %.2f & %.2f " % (HF, MP))
 
 
 
 
-plot_MO_energies(He.E, "He", 2)
-plot_MO_energies(Be.E, "Be", 4)
+plot_MO_energies(He.MO_energies, "He", 2)
+plot_MO_energies(Be.MO_energies, "Be", 4)
 
-#plot_AO_energies(HydrogenOrbital(2), "He")
-#plot_AO_energies(HydrogenOrbital(4), "Be")
-plot_AO_energies(HydrogenOrbital(1), "H")
-
-
-
-
-
+plot_AO_energies(HydrogenLike(2), "He")
+plot_AO_energies(HydrogenLike(4), "Be")
+plot_AO_energies(HydrogenLike(1), "H")
 
 
 

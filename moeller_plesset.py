@@ -1,19 +1,31 @@
 from hartree_fock import HartreeFock
 
 class MoellerPlesset(HartreeFock):
-
-	def energy(self):
+	'''
+	Class for Møller-Plesset calculations
+	Limited to second order correction
+	'''
+	
+	# override
+	def bonding_energy(self):
 		dE = 0.0
 		for i in range(self.Ne):
 			for j in range(i):
+				e_ij = self._epsilon[i] + self._epsilon[j]
 				for a in range(self.Ne, self.basis.N):
 					for b in range(self.Ne, a):
-						V_AS = self.V_AS(i, j, a, b)
-						dE += V_AS*V_AS/(self.E[i] + self.E[j] - self.E[a] - self.E[b])			
-		return HartreeFock.energy(self) + dE
+						V_AS = self._V_AS(i, j, a, b)
+						e_ab = self._epsilon[a] + self._epsilon[b]
+						dE += V_AS*V_AS/(e_ij - e_ab)			
+		return HartreeFock.bonding_energy(self) + dE
 
 	
-	def V_AS(self, i, j, a, b):
+	def _V_AS(self, i, j, a, b):
+		'''
+		antisymmetric coulomb integral
+		<i j|v|a b> - <i j|v|b a>
+		all variables : int symbol for MO
+		'''
 		V_AS = 0.0
 		for alpha in range(self.basis.N):
 			ci = self.C[alpha][i]

@@ -1,85 +1,86 @@
+from atomic_orbital import AtomicOrbital
 import numpy as np
 
-class HydrogenOrbital:
-	def __init__(self, Z):	
+class HydrogenLike(AtomicOrbital):
+	def __init__(self, Z):
+		'''
+		Z : nuclei charge (atmic number)
+		'''	
+		super().__init__(6, np.identity(6, dtype=float))
 		self._Z = Z
 		self._ZZ = Z*Z
 		self._V = np.load("coulomb/coulomb.npy")*Z
-		self._N = 6
-		self._S = np.identity(self._N, dtype=float) 
 		self.__create_V_AS()
 
 
-	def calc_V_AS(self, p, q, r, s):
-		SqrSqs = ((p + r + 1) & 1)*((q + s + 1) & 1)
-		SqsSqr = ((p + s + 1) & 1)*((q + r + 1) & 1)
-		p, q, r, s = p//2, q//2, r//2, s//2
-		Vpqrs = self._V[p, q, r, s]*SqrSqs
-		Vpqsr = self._V[p, q, s, r]*SqsSqr
-		return Vpqrs - Vpqsr
-
-	def V_AS(self, p, q, r, s):
-		return self._V_AS[p, q, r, s]
-
-
-	def __create_V_AS(self):
-		self._V_AS = np.zeros((self._N, self._N, self._N, self._N))
-		for p in range(0, self._N, 2):
-			for q in range(0, self._N, 2):
-				for r in range(0, self._N, 2):
-					Vpqrr = self._V[p//2, q//2, r//2, r//2]
-					self._V_AS[p+1, q, r+1, r] =  Vpqrr
-					self._V_AS[p, q+1, r, r+1] =  Vpqrr
-					self._V_AS[p+1, q, r, r+1] = -Vpqrr
-					self._V_AS[p, q+1, r+1, r] = -Vpqrr
-
-					for s in range(0, r, 2):
-						Vpqrs = self._V[p//2, q//2, r//2, s//2]
-						Vpqsr = self._V[p//2, q//2, s//2, r//2]
-					
-						self._V_AS[p, q, r, s] = Vpqrs - Vpqsr
-						self._V_AS[p+1, q+1, r+1, s+1] = Vpqrs - Vpqsr
-						self._V_AS[p+1, q, r+1, s] = Vpqrs
-						self._V_AS[p, q+1, r, s+1] = Vpqrs
-						self._V_AS[p+1, q, r, s+1] = -Vpqsr
-						self._V_AS[p, q+1, r+1, s] = -Vpqsr
-
-						self._V_AS[p, q, s, r] =  Vpqsr - Vpqrs
-						self._V_AS[p+1, q+1, s+1, r+1] = Vpqsr - Vpqrs
-						self._V_AS[p+1, q, s+1, r] = Vpqsr
-						self._V_AS[p, q+1, s, r+1] = Vpqsr
-						self._V_AS[p+1, q, s, r+1] = -Vpqrs
-						self._V_AS[p, q+1, s+1, r] = -Vpqrs
+	def calc_V_AS(self, alpha, beta, gamma, delta):
+		'''
+		calculate antisymmetric coulomb integral
+		'''
+		Sabgd = ((alpha + gamma + 1) & 1)*((beta + delta + 1) & 1)
+		Sabdg = ((alpha + delta + 1) & 1)*((beta + gamma + 1) & 1)
+		alpha, beta, gamma, delta = alpha//2, beta//2, gamma//2, delta//2
+		Vabgd = self._V[alpha, beta, gamma, delta]*Sabgd
+		Vabdg = self._V[alpha, beta, delta, gamma]*Sabdg
+		return Vabgd - Vabdg
 
 
+	# override
+	def V_AS(self, alpha, beta, gamma, delta):
+		return self._V_AS[alpha, beta, gamma, delta]
 
-	def V(self, p, q, r, s):
-		return self._V[p//2, q//2, r//2, s//2]
+	# override
+	def V(self, alpha, beta, gamma, delta):
+		return self._V[alpha//2, beta//2, gamma//2, delta//2]
 
-
+	# override
 	def energy(self, alpha):
 		n = alpha//2 + 1
 		return -0.5*self._ZZ/(n*n)
 
 	@property
 	def Z(self):
+		'''
+		atomic number
+		'''
 		return self._Z
 
-	@property
-	def N(self):
-		return self._N
-
-	@property
-	def S(self):
-		return self._S
-
+	# override
 	def __str__(self):
 		return "Hydrogen-like"
 
+	# override
 	def __repr__(self):
 		return "Hydrogen-like"
-	
-	
-	
 
+	def __create_V_AS(self):
+		'''
+		create matrix for storing the antisymmetric coulomb integrals
+		'''
+		self._V_AS = np.zeros((self._N, self._N, self._N, self._N))
+		for alpha in range(0, self._N, 2):
+			for beta in range(0, self._N, 2):
+				for gamma in range(0, self._N, 2):
+					Vabgg = self._V[alpha//2, beta//2, gamma//2, gamma//2]
+					self._V_AS[alpha+1, beta, gamma+1, gamma] =  Vabgg
+					self._V_AS[alpha, beta+1, gamma, gamma+1] =  Vabgg
+					self._V_AS[alpha+1, beta, gamma, gamma+1] = -Vabgg
+					self._V_AS[alpha, beta+1, gamma+1, gamma] = -Vabgg
+					for delta in range(0, gamma, 2):
+						Vabgd = self._V[alpha//2, beta//2, gamma//2, delta//2]
+						Vabdg = self._V[alpha//2, beta//2, delta//2, gamma//2]
+					
+						self._V_AS[alpha, beta, gamma, delta] = Vabgd - Vabdg
+						self._V_AS[alpha+1, beta+1, gamma+1, delta+1] = Vabgd - Vabdg
+						self._V_AS[alpha+1, beta, gamma+1, delta] = Vabgd
+						self._V_AS[alpha, beta+1, gamma, delta+1] = Vabgd
+						self._V_AS[alpha+1, beta, gamma, delta+1] = -Vabdg
+						self._V_AS[alpha, beta+1, gamma+1, delta] = -Vabdg
+						
+						self._V_AS[alpha, beta, delta, gamma] =  Vabdg - Vabgd
+						self._V_AS[alpha+1, beta+1, delta+1, gamma+1] = Vabdg - Vabgd
+						self._V_AS[alpha+1, beta, delta+1, gamma] = Vabdg
+						self._V_AS[alpha, beta+1, delta, gamma+1] = Vabdg
+						self._V_AS[alpha+1, beta, delta, gamma+1] = -Vabgd
+						self._V_AS[alpha, beta+1, delta+1, gamma] = -Vabgd
 

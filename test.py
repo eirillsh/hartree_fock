@@ -1,7 +1,7 @@
 from gaussian_quadrature import Hermite
 from hartree_fock import HartreeFock
 from moeller_plesset import MoellerPlesset as MøllerPlesset
-from hydrogen_like import HydrogenOrbital
+from hydrogen_like import HydrogenLike
 import numpy as np
 
 verbose = True
@@ -65,7 +65,7 @@ test_hermite()
 #------TESTING HYDROGEN ORBITALS------
 
 def test_V_AS():
-	HO = HydrogenOrbital(2)
+	HO = HydrogenLike(2)
 	MSE = 0.0
 	for p in range(HO.N):
 		for q in range(HO.N):
@@ -105,8 +105,8 @@ def test_Fock_matrix(HF):
 
 print("\nTesting Hartree-Fock")
 
-He = HartreeFock(HydrogenOrbital(2), 2)
-Be = HartreeFock(HydrogenOrbital(4), 4)
+He = HartreeFock(HydrogenLike(2), 2)
+Be = HartreeFock(HydrogenLike(4), 4)
 He.solve()
 Be.solve()
 test_coeff_matrix(He)
