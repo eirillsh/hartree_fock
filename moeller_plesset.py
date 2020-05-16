@@ -7,7 +7,7 @@ class MoellerPlesset(HartreeFock):
 	'''
 	
 	# override
-	def bonding_energy(self):
+	def binding_energy(self):
 		dE = 0.0
 		for i in range(self.Ne):
 			for j in range(i):
@@ -17,7 +17,7 @@ class MoellerPlesset(HartreeFock):
 						V_AS = self._V_AS(i, j, a, b)
 						e_ab = self._epsilon[a] + self._epsilon[b]
 						dE += V_AS*V_AS/(e_ij - e_ab)			
-		return HartreeFock.bonding_energy(self) + dE
+		return HartreeFock.binding_energy(self) + dE
 
 	
 	def _V_AS(self, i, j, a, b):

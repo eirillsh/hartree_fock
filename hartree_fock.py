@@ -17,9 +17,9 @@ class HartreeFock:
 		self._epsilon = basis.energy(np.linspace(0, self.basis.N-1, self.basis.N))
 
 
-	def bonding_energy(self):
+	def binding_energy(self):
 		'''
-		the bonding energy 
+		the binding energy using MOs
 		'''
 		D = self.density_matrix()
 		E = E0 = 0.0
@@ -34,15 +34,18 @@ class HartreeFock:
 
 
 	
-	def AO_bonding_energy(self):
+	def AO_binding_energy(self):
+		'''
+		the binding energy using AOs
+		'''
 		C = self._C 
 		self._C = np.identity(self.basis.N, dtype=float)
-		E = self.bonding_energy()
+		E = self.binding_energy()
 		self._C = C
 		return E
 
 
-	def solve(self, tol=1e-12, max_it=100):
+	def solve(self, tol=1e-26, max_it=100):
 		'''
 		optimize the energy with respect to the coefficients
 		'''

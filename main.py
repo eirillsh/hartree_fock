@@ -20,6 +20,7 @@ def plot_MO_energies(E, atom, Z):
 	plt.savefig("results/" + atom + ".pdf")
 	plt.close()
 
+
 def plot_AO_energies(basis, atom):
 	x = np.linspace(0, 5, 6, dtype=int)
 	y_tick = [basis.energy(i) for i in range(0, 6, 2)]
@@ -40,63 +41,36 @@ def plot_AO_energies(basis, atom):
 	plt.close()
 
 
+def create_results(atom):
+	basis = HydrogenLike(atom['Z'])
+	plot_AO_energies(basis, atom['name'])
+	HF = HartreeFock(basis, atom['Z'])
+	HF.solve()
+	atom["HF"] = HF.binding_energy()
+	atom["AO"] = HF.AO_binding_energy()
+	plot_MO_energies(HF.MO_energies, atom['name'], atom['Z'])
+	MP = MøllerPlesset(basis, atom['Z'])
+	MP.solve()
+	atom["MP"] = MP.binding_energy()
+	print(f"Before HF      energy is %.4f. Error : %.3f %%" %(atom["AO"], 100*(atom["exp"] -atom["AO"])/atom["exp"]))
+	print(f"Hartree-Fock   energy is %.4f. Error : %.3f %%" %(atom["HF"], 100*(atom["exp"] -atom["HF"])/atom["exp"]))
+	print(f"Møller-Plesset energy is %.4f. Error : %.3f %%" %(atom["MP"], 100*(atom["exp"] -atom["MP"])/atom["exp"]))
+	print(f"Experimental   energy is %.4f." %(atom["exp"]))
+	atom["table"] = "\n\t\t$\\mathrm{%s}$ & %.5g & %.5g & %.5g & %.4g\\\\" \
+	%(atom['name'], atom["AO"], atom["HF"], atom["MP"], atom["exp"])
+
+
 with open("results/table.txt", "w") as outfile:
-	outfile.write("Bonding Energy:\n")
+	outfile.write("Binding Energy:")
+
 	print("\nHELIUM")
-	Z = 2
-	orbitals = HydrogenLike(Z)
-	He = HartreeFock(orbitals, Z)
-	He_phi = He.bonding_energy()
-	print(f"Before HF      energy is {He_phi}")
-	He.solve()
-	He_HF = He.bonding_energy()
-	print(f"Hartree-Fock   energy is {He_HF}")
-
-	He = MøllerPlesset(orbitals, Z)
-	He.solve()
-	He_MP = He.bonding_energy()
-	print(f"Møller-Plesset energy is {He_MP}")
-	print(f"Experimental   energy is -2.904")
-	outfile.write("\t\t$\\mathrm{He}$ & %.4f & %.4f & %.4f & -2.904\\\\" % (He_phi, He_HF, He_MP))
-
+	He = {"Z": 2, "name" : "He", "exp" : -2.904}
+	create_results(He)
+	outfile.write(He["table"])
 
 	print("\n\nBERYLLIUM")
-	Z = 4
-	orbitals = HydrogenLike(Z)
-	Be = HartreeFock(orbitals, Z)
-	Be_phi = Be.bonding_energy()
-	print(f"Before HF      energy is {Be_phi}")
-	Be.solve()
-	Be_HF = Be.bonding_energy()
-	print(f"Hartree-Fock   energy is {Be_HF}")
-
-	Be = MøllerPlesset(orbitals, Z)
-	Be.solve()
-	Be_MP = Be.bonding_energy()
-	print(f"Møller-Plesset energy is {Be_MP}")
-	print(f"Experimental   energy is -14.67")
-	outfile.write("\n\t\t$\\mathrm{Be}$ & %.3f & %.3f & %.3f & -14.67" % (Be_phi, Be_HF, Be_MP))
-
-	#outfile.write("\n\nRelative errors:\n")
-	E = -2.904
-	HF = (E - He_HF)/E*100
-	MP = (E - He_MP)/E*100
-	#outfile.write("\t\t$\\mathrm{He} $ & %.2f  & %.2f \\\\" % (HF, MP))
-	E = -14.67
-	HF = (E - Be_HF)/E*100
-	MP = (E - Be_MP)/E*100
-	#outfile.write("\n\t\t$\\mathrm{Be} $ & %.2f & %.2f " % (HF, MP))
-
-
-
-
-plot_MO_energies(He.MO_energies, "He", 2)
-plot_MO_energies(Be.MO_energies, "Be", 4)
-
-plot_AO_energies(HydrogenLike(2), "He")
-plot_AO_energies(HydrogenLike(4), "Be")
-plot_AO_energies(HydrogenLike(1), "H")
-
-
+	Be = {"Z": 4, "name" : "Be", "exp" : -14.67}
+	create_results(Be)
+	outfile.write(Be["table"])
 
 
