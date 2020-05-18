@@ -45,7 +45,7 @@ class HartreeFock:
 		return E
 
 
-	def solve(self, tol=1e-26, max_it=100):
+	def solve(self, tol=1e-12, max_it=100):
 		'''
 		optimize the energy with respect to the coefficients
 		'''
