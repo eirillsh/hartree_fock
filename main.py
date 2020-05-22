@@ -1,5 +1,6 @@
 from hartree_fock import HartreeFock
 from moeller_plesset import MoellerPlesset as MøllerPlesset
+from coupled_cluster import CoupledCluster
 from hydrogen_like import HydrogenLike
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -52,14 +53,26 @@ def create_results(atom):
 	MP = MøllerPlesset(basis, atom['Z'])
 	MP.solve()
 	atom["MP"] = MP.binding_energy()
+	CC = CoupledCluster(basis, atom['Z'])
+	CC.solve()
+	atom["CC"] = CC.binding_energy()
 	print(f"Number of iterations: {iterations}.")
-	print(f"Before HF      energy is %.4f. Error : %.3f %%" %(atom["AO"], 100*(atom["exp"] -atom["AO"])/atom["exp"]))
-	print(f"Hartree-Fock   energy is %.4f. Error : %.3f %%" %(atom["HF"], 100*(atom["exp"] -atom["HF"])/atom["exp"]))
-	print(f"Møller-Plesset energy is %.4f. Error : %.3f %%" %(atom["MP"], 100*(atom["exp"] -atom["MP"])/atom["exp"]))
-	print(f"Experimental   energy is %.4f." %(atom["exp"]))
+	print(f"Before HF       energy is %.4f. Error : %.3f %%" %(atom["AO"], 100*(atom["exp"] -atom["AO"])/atom["exp"]))
+	print(f"Hartree-Fock    energy is %.4f. Error : %.3f %%" %(atom["HF"], 100*(atom["exp"] -atom["HF"])/atom["exp"]))
+	print(f"Møller-Plesset  energy is %.4f. Error : %.3f %%" %(atom["MP"], 100*(atom["exp"] -atom["MP"])/atom["exp"]))
+	print(f"Coupled-Cluster energy is %.4f. Error : %.3f %%" %(atom["CC"], 100*(atom["exp"] -atom["CC"])/atom["exp"]))
+	print(f"Experimental    energy is %.4f." %(atom["exp"]))
 	atom["table"] = "\n\t\t$\\mathrm{%s}$ & %.5g & %.5g & %.5g & %.4g\\\\" \
-	%(atom['name'], atom["AO"], atom["HF"], atom["MP"], atom["exp"])
+		%(atom['name'], atom["AO"], atom["HF"], atom["MP"], atom["exp"])
 
+	'''
+	C = HF.C
+	N = len(HF.C)
+	for i in range(N):
+		for j in range(N):
+			print("%10.3g " %C[i][j], end="")
+		print()
+	'''
 
 with open("results/table.txt", "w") as outfile:
 	outfile.write("Binding Energy:")

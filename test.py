@@ -116,7 +116,9 @@ test_Fock_matrix(Be)
 
 
 
+#------TESTING HARTREE-FOCK------
 
+# Check that initial ampitude yildes same as Møller-Plesset
 
 
 

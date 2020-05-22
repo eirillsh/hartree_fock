@@ -14,26 +14,8 @@ class MoellerPlesset(HartreeFock):
 				e_ij = self._epsilon[i] + self._epsilon[j]
 				for a in range(self.Ne, self.basis.N):
 					for b in range(self.Ne, a):
-						V_AS = self._V_AS(i, j, a, b)
 						e_ab = self._epsilon[a] + self._epsilon[b]
-						dE += V_AS*V_AS/(e_ij - e_ab)			
-		return HartreeFock.binding_energy(self) + dE
+						dE += self.V_AS(i, j, a, b)*self.V_AS(a, b, i, j)/(e_ij - e_ab)
 
-	
-	def _V_AS(self, i, j, a, b):
-		'''
-		antisymmetric coulomb integral
-		<i j|v|a b> - <i j|v|b a>
-		all variables : int symbol for MO
-		'''
-		V_AS = 0.0
-		for alpha in range(self.basis.N):
-			ci = self.C[alpha][i]
-			for beta in range(self.basis.N):
-				cica = ci*self.C[beta][a]
-				for gamma in range(self.basis.N):
-					cicjca = cica*self.C[gamma][j]
-					for delta in range(self.basis.N):
-						cicjcacb = cicjca*cica*self.C[delta][b]
-						V_AS += cicjcacb*self.basis.V_AS(alpha, gamma, beta, delta)
-		return V_AS
+		print("dE", dE)			
+		return HartreeFock.binding_energy(self) + dE

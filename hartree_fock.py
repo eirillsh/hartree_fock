@@ -67,6 +67,7 @@ class HartreeFock:
 		for alpha in range(self.basis.N):
 			for beta in range(self.basis.N):
 				D[alpha][beta] = np.sum(self.C[alpha][:self.Ne]*self.C[beta][:self.Ne])
+				#D[alpha][beta] = np.sum(self.C[:self.Ne, alpha]*self.C[:self.Ne, beta])
 		return D
 
 
@@ -83,6 +84,45 @@ class HartreeFock:
 					for delta in range(self.basis.N):
 						F[alpha][beta] += D[gamma][delta]*self.basis.V_AS(alpha, gamma, beta, delta)
 		return F
+
+
+	def V(self, p, q, r, s):
+		V = 0.0
+		for alpha in range(self.basis.N):
+			cp = self._C[alpha][p]
+			for beta in range(self.basis.N):
+				cp_cr = cp*self._C[beta][r]
+				for gamma in range(self.basis.N):
+					cp_cq_cr = cp_cr*self._C[gamma][q]
+					for delta in range(self.basis.N):
+						cp_cq_cr_cs = cp_cq_cr*self._C[delta][s]
+						V += cp_cq_cr_cs*self.basis.V(alpha, gamma, beta, delta)
+		return V
+
+	
+	def V_AS_(self, p, q, r, s):
+		Spqrs = ((p + r + 1) & 1)*((q + s + 1) & 1)
+		Spgsr = ((p + s + 1) & 1)*((q + r + 1) & 1)
+		return Spqrs*self.V(p, q, r, s) - Spgsr*self.V(p, q, s, r)
+
+
+	def V_AS(self, p, q, r, s):
+		'''
+		antisymmetric coulomb integral
+		<p q|v|r s> - <p q|v|s r>
+		all variables : int symbol for MO
+		'''
+		V_AS = 0.0
+		for alpha in range(self.basis.N):
+			cp = self._C[alpha][p]
+			for beta in range(self.basis.N):
+				cp_cr = cp*self._C[beta][r]
+				for gamma in range(self.basis.N):
+					cp_cq_cr = cp_cr*self._C[gamma][q]
+					for delta in range(self.basis.N):
+						cp_cq_cr_cs = cp_cq_cr*self._C[delta][s]
+						V_AS += cp_cq_cr_cs*self.basis.V_AS(alpha, gamma, beta, delta)
+		return V_AS
 
 	
 	@property
