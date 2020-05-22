@@ -90,20 +90,19 @@ class HartreeFock:
 		V = 0.0
 		for alpha in range(self.basis.N):
 			cp = self._C[alpha][p]
+			#cp = self._C[p, alpha]
 			for beta in range(self.basis.N):
 				cp_cr = cp*self._C[beta][r]
+				#cp_cr = cp*self._C[r, beta]
 				for gamma in range(self.basis.N):
 					cp_cq_cr = cp_cr*self._C[gamma][q]
+					#cp_cq_cr = cp_cr*self._C[q, gamma]
 					for delta in range(self.basis.N):
 						cp_cq_cr_cs = cp_cq_cr*self._C[delta][s]
+						#cp_cq_cr_cs = cp_cq_cr*self._C[s, delta]
 						V += cp_cq_cr_cs*self.basis.V(alpha, gamma, beta, delta)
 		return V
 
-	
-	def V_AS_(self, p, q, r, s):
-		Spqrs = ((p + r + 1) & 1)*((q + s + 1) & 1)
-		Spgsr = ((p + s + 1) & 1)*((q + r + 1) & 1)
-		return Spqrs*self.V(p, q, r, s) - Spgsr*self.V(p, q, s, r)
 
 
 	def V_AS(self, p, q, r, s):
@@ -115,12 +114,16 @@ class HartreeFock:
 		V_AS = 0.0
 		for alpha in range(self.basis.N):
 			cp = self._C[alpha][p]
+			#cp = self._C[p, alpha]
 			for beta in range(self.basis.N):
 				cp_cr = cp*self._C[beta][r]
+				#cp_cr = cp*self._C[r, beta]
 				for gamma in range(self.basis.N):
 					cp_cq_cr = cp_cr*self._C[gamma][q]
+					#cp_cq_cr = cp_cr*self._C[q, gamma]
 					for delta in range(self.basis.N):
 						cp_cq_cr_cs = cp_cq_cr*self._C[delta][s]
+						#cp_cq_cr_cs = cp_cq_cr*self._C[s, delta]
 						V_AS += cp_cq_cr_cs*self.basis.V_AS(alpha, gamma, beta, delta)
 		return V_AS
 

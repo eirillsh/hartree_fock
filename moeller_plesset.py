@@ -15,7 +15,5 @@ class MoellerPlesset(HartreeFock):
 				for a in range(self.Ne, self.basis.N):
 					for b in range(self.Ne, a):
 						e_ab = self._epsilon[a] + self._epsilon[b]
-						dE += self.V_AS(i, j, a, b)*self.V_AS(a, b, i, j)/(e_ij - e_ab)
-
-		print("dE", dE)			
+						dE += self.V_AS(i, j, a, b)*self.V_AS(a, b, i, j)/(e_ij - e_ab)			
 		return HartreeFock.binding_energy(self) + dE
