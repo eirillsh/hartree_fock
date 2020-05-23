@@ -47,10 +47,11 @@ class HartreeFock:
 
 	def solve(self, tol=1e-12, max_it=100):
 		'''
+		tol    : tolerance of convergence 
+		max_it : maximum number of iterations
 		optimize the energy with respect to the coefficients
 		'''
-		eps_prev = self._epsilon
-		self._epsilon, self._C = np.linalg.eigh(self.Fock_matrix())
+		eps_prev = np.inf
 		counter = 0
 		while (np.linalg.norm(eps_prev - self._epsilon) > tol and counter < max_it):
 			eps_prev = self._epsilon
@@ -107,9 +108,9 @@ class HartreeFock:
 
 	def V_AS(self, p, q, r, s):
 		'''
+		p, q, r, s : int symbol for MO
 		antisymmetric coulomb integral
 		<p q|v|r s> - <p q|v|s r>
-		all variables : int symbol for MO
 		'''
 		V_AS = 0.0
 		for alpha in range(self.basis.N):
@@ -126,6 +127,25 @@ class HartreeFock:
 						#cp_cq_cr_cs = cp_cq_cr*self._C[s, delta]
 						V_AS += cp_cq_cr_cs*self.basis.V_AS(alpha, gamma, beta, delta)
 		return V_AS
+
+
+	def _compute_V_AS(self):
+		'''
+		create matrix and store in class 
+		containing all antisymmetric coulomb integrals
+		<p q|v|r s> - <p q|v|s r>
+		'''
+		N = self.basis.N
+		self._V_AS = np.zeros((N, N, N, N))
+		for p in range(N):
+			for q in range(p):
+				for r in range(N):
+					for s in range(r):
+						V_AS = self.V_AS(p, q, r, s)
+						self._V_AS[p, q, r, s] =  V_AS
+						self._V_AS[q, p, s, r] =  V_AS
+						self._V_AS[q, p, r, s] = -V_AS
+						self._V_AS[p, q, s, r] = -V_AS
 
 	
 	@property

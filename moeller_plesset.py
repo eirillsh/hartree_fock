@@ -8,6 +8,9 @@ class MoellerPlesset(HartreeFock):
 	
 	# override
 	def binding_energy(self):
+		'''
+		Møller Plesset energy
+		'''
 		dE = 0.0
 		for i in range(self.Ne):
 			for j in range(i):

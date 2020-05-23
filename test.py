@@ -201,7 +201,7 @@ def test_inital_amplitudes(basis, Z):
 	MP = MøllerPlesset(basis, Z)
 	MP.solve()
 	CCD = CoupledCluster(basis, Z)
-	CCD.solve(eta=1.0, max_it=0)
+	CCD.solve(eta=1.0, max_it=1)
 
 	diff = abs(MP.binding_energy() - CCD.binding_energy())
 	print(f"\tDifference between MP energy and CCD with one iteration is {diff:.4g} using {Z} electrons.")

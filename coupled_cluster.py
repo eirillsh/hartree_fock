@@ -12,11 +12,13 @@ class CoupledCluster(HartreeFock):
 		self.virtual = basis.N - Ne
 		self._t = np.zeros((Ne, Ne, self.virtual, self.virtual))
 		self._d_epsilon = np.zeros((Ne, Ne, self.virtual, self.virtual))
-		self._V_AS = np.zeros((basis.N, basis.N, basis.N, basis.N))
 
 
 	# override
-	def binding_energy(self):	
+	def binding_energy(self):
+		'''
+		Coupled Cluster energy
+		'''	
 		dE = 0.0
 		for i in range(self.Ne):
 			for j in range(i):
@@ -28,16 +30,21 @@ class CoupledCluster(HartreeFock):
 		return HartreeFock.binding_energy(self) + dE
 
 	
+	# override
 	def solve(self, eta=1.0, tol=1e-16, max_it=100, HF_tol=1e-12, HF_max_it=100):
 		'''
-		optimize the amplitudes
+		eta  : learning rate (use in case of oscillation)
+		tol    : tolerance of convergence for the amplitudes
+		max_it : maximum number of iterations for the amplitude
+		HF_tol    : tolerance of convergence for Hartree-Fock
+		HF_max_it : maximum number of iterations for Hartree-Fock
+		solve Hartree-Fock and optimize the amplitudes
 		'''
 		HartreeFock.solve(self, tol=HF_tol, max_it=HF_max_it)
 		self._compute_V_AS()
 		self.compute_d_epsilon()
 
-		t_next = self.next_amplitudes()
-		self._t = eta*t_next
+		t_next = np.inf
 		counter = t = 0
 		while (counter < max_it and np.linalg.norm(t - t_next) > tol):
 			t = self._t
@@ -47,12 +54,11 @@ class CoupledCluster(HartreeFock):
 		return counter 
 
 
-
-	def initial_amplitudes(self):
-		return self._V_AS[:self.Ne, :self.Ne, self.Ne:, self.Ne:]/self._d_epsilon
-
-
 	def next_amplitudes(self):
+		'''
+		calculate the next cluster amplitudes 
+		t^{n+1}
+		'''
 		t = np.zeros((self.Ne, self.Ne, self.virtual, self.virtual))
 		for i in range(self.Ne):
 			for j in range(i):
@@ -65,10 +71,16 @@ class CoupledCluster(HartreeFock):
 						t[j, i, b_idx, a_idx] =  t_ij_ab
 						t[j, i, a_idx, b_idx] = -t_ij_ab
 						t[i, j, b_idx, a_idx] = -t_ij_ab
-		return t/self._d_epsilon
+		return t
 
 
 	def next_amplitude(self, i, j, a, b):
+		'''
+		i, j : labels of occupied AOs
+		a, b : labels of virtual AOs
+		(t_{i j}^{a b})^{n+1}
+		calculate the next cluster amplitude
+		'''
 		a_idx = a - self.Ne
 		b_idx = b - self.Ne
 
@@ -100,23 +112,18 @@ class CoupledCluster(HartreeFock):
 						coeff -= 2*self._t[l, k, a_idx, c_idx]*self._t[i, j, d_idx, b_idx]
 						coeff += 2*self._t[l, k, b_idx, c_idx]*self._t[i, j, d_idx, a_idx]
 						t_ij_ab += coeff*self._V_AS[k, l, c, d]
-		return t_ij_ab
+		return t_ij_ab/self._d_epsilon[i, j, a_idx, b_idx]
 
-
-	
-	def _compute_V_AS(self):
-		for i in range(self.basis.N):
-			for j in range(i):
-				for a in range(self.basis.N):
-					for b in range(a):
-						V_AS = self.V_AS(i, j, a, b)
-						self._V_AS[i, j, a, b] =  V_AS
-						self._V_AS[j, i, b, a] =  V_AS
-						self._V_AS[j, i, a, b] = -V_AS
-						self._V_AS[i, j, b, a] = -V_AS
 
 	
 	def compute_d_epsilon(self):
+		'''
+		compute all permutations of
+		(epsilon_i + epsilon_j - epsilon_a - epsilon_b)
+		epsilon : MO energy 
+		i, j : label of occupied MO
+		a, b : label of virtual MO
+		'''
 		for i in range(self.Ne):
 			self._d_epsilon[i, :, :, :] += self._epsilon[i]
 			self._d_epsilon[:, i, :, :] += self._epsilon[i]
@@ -128,6 +135,12 @@ class CoupledCluster(HartreeFock):
 
 	
 	def t(self, i, j, a, b):
+		'''
+		i, j : labels of occupied AOs
+		a, b : labels of virtual AOs
+		t_{i j}^{a b}
+		cluster amplitude 
+		'''
 		return self._t[i, j, a - self.Ne, b - self.Ne]
 
 
