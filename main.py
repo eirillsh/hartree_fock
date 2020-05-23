@@ -56,15 +56,48 @@ def create_results(atom):
 	CC = CoupledCluster(basis, atom['Z'])
 	iterations_CC = CC.solve()
 	atom["CC"] = CC.binding_energy()
+
+	HF_dev = 100*(atom["exp"] - atom["HF"])/atom["exp"]
+	MP_dev = 100*(atom["exp"] - atom["MP"])/atom["exp"]
+	CC_dev = 100*(atom["exp"] - atom["CC"])/atom["exp"]
 	print(f"Number of iterations: {iterations_HF} HF and {iterations_CC} CCD.")
-	print(f"Before HF       energy is %.4f. Error : %.3f %%" %(atom["AO"], 100*(atom["exp"] -atom["AO"])/atom["exp"]))
-	print(f"Hartree-Fock    energy is %.4f. Error : %.3f %%" %(atom["HF"], 100*(atom["exp"] -atom["HF"])/atom["exp"]))
-	print(f"Møller-Plesset  energy is %.4f. Error : %.3f %%" %(atom["MP"], 100*(atom["exp"] -atom["MP"])/atom["exp"]))
-	print(f"Coupled-Cluster energy is %.4f. Error : %.3f %%" %(atom["CC"], 100*(atom["exp"] -atom["CC"])/atom["exp"]))
+	print(f"Before HF       energy is %.4f. Error : %.3f %%." %(atom["AO"], 100*(atom["exp"] - atom["AO"])/atom["exp"]))
+	print(f"Hartree-Fock    energy is %.4f. Error : %.3f %%." %(atom["HF"], HF_dev))
+	print(f"Møller-Plesset  energy is %.4f. Error : %.3f %%. Improved %.3g %% from HF." %(atom["MP"], MP_dev, HF_dev - MP_dev))
+	print(f"Coupled-Cluster energy is %.4f. Error : %.3f %%. Improved %.3g %% from HF." %(atom["CC"], CC_dev, HF_dev - CC_dev))
 	print(f"Experimental    energy is %.4f." %(atom["exp"]))
 	atom["table"] = "\n\t\t$\\mathrm{%s}$ & %.5g & %.5g & %.5g & %.5g & %.4g\\\\" \
 		%(atom['name'], atom["AO"], atom["HF"], atom["MP"],  atom["CC"], atom["exp"])
 
+
+def smaller_basis_He(N):
+	atom = {"name" : "He_basis%d" %N, "Z" : 2, "exp" : -2.904}
+	basis = HydrogenLike(atom['Z'])
+	basis._N = N
+	HF = HartreeFock(basis, atom['Z'])
+	iterations_HF = HF.solve()
+	atom["HF"] = HF.binding_energy()
+	atom["AO"] = HF.AO_binding_energy()
+	plot_MO_energies(HF.MO_energies, atom['name'], atom['Z'])
+	MP = MøllerPlesset(basis, atom['Z'])
+	MP.solve()
+	atom["MP"] = MP.binding_energy()
+	CC = CoupledCluster(basis, atom['Z'])
+	iterations_CC = CC.solve()
+	atom["CC"] = CC.binding_energy()
+
+	HF_dev = 100*(atom["exp"] - atom["HF"])/atom["exp"]
+	MP_dev = 100*(atom["exp"] - atom["MP"])/atom["exp"]
+	CC_dev = 100*(atom["exp"] - atom["CC"])/atom["exp"]
+	print(f"Number of iterations: {iterations_HF} HF and {iterations_CC} CCD.")
+	print(f"Before HF       energy is %.4f. Error : %.3f %%." %(atom["AO"], 100*(atom["exp"] - atom["AO"])/atom["exp"]))
+	print(f"Hartree-Fock    energy is %.4f. Error : %.3f %%." %(atom["HF"], HF_dev))
+	print(f"Møller-Plesset  energy is %.4f. Error : %.3f %%. Improved %.3g %% from HF." %(atom["MP"], MP_dev, HF_dev - MP_dev))
+	print(f"Coupled-Cluster energy is %.4f. Error : %.3f %%. Improved %.3g %% from HF." %(atom["CC"], CC_dev, HF_dev - CC_dev))
+	print(f"Experimental    energy is %.4f." %(atom["exp"]))
+	atom["table"] = "\n\t\t$\\%s$ & %.5g & %.5g & %.5g & %.5g & %.4g\\\\" \
+		%("reduced", atom["AO"], atom["HF"], atom["MP"],  atom["CC"], atom["exp"])
+	return atom
 	
 
 with open("results/table.txt", "w") as outfile:
@@ -79,5 +112,31 @@ with open("results/table.txt", "w") as outfile:
 	Be = {"Z": 4, "name" : "Be", "exp" : -14.67}
 	create_results(Be)
 	outfile.write(Be["table"])
+
+	print("\n\nHELIUM SMALLER BASIS")
+	He4 = smaller_basis_He(4)
+	outfile.write("\nBinding Energy of He with reduced basis:")
+	outfile.write(He4["table"])
+
+
+
+key = ["AO", "HF", "MP", "CC"]
+label = [r"$E^{\Phi}$", r"$E^{HF}$", r"$E^{MP}$", r"$E^{CC}$"]
+x = [4, 6]
+E = []
+for i in range(1, 4):
+	y = [(He4[key[i]] - He["exp"])/He["exp"], (He[key[i]] - He["exp"])/He["exp"]]
+	E += y
+	plt.plot(x, y, "--", marker="o", label=label[i])
+plt.legend()
+plt.xticks([4, 6], fontsize=16)
+plt.yticks(E, [""]*6, fontsize=15)
+#plt.axis([3.9, 6.1, He["CC"] - 0.001, He4["HF"] + 0.001])
+plt.grid()
+plt.savefig("results/compare.pdf")
+plt.close()
+
+
+
 
 

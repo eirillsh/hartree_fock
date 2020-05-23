@@ -1,3 +1,5 @@
 Binding Energy:
 		$\mathrm{He}$ & -2.75 & -2.8311 & -2.8378 & -2.8391 & -2.904\\
 		$\mathrm{Be}$ & -13.716 & -14.508 & -14.512 & -14.513 & -14.67\\
+Binding Energy of He with reduced basis:
+		$\reduced$ & -2.75 & -2.8236 & -2.8297 & -2.8306 & -2.904\\
