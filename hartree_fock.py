@@ -32,7 +32,6 @@ class HartreeFock:
 						E += Dab*D[gamma][delta]*self.basis.V_AS(alpha, gamma, beta, delta)
 		return E0 + 0.5*E
 
-
 	
 	def AO_binding_energy(self):
 		'''
@@ -66,9 +65,10 @@ class HartreeFock:
 		'''
 		D = np.zeros((self.basis.N, self.basis.N))
 		for alpha in range(self.basis.N):
-			for beta in range(self.basis.N):
+			D[alpha][alpha] = np.sum(self.C[alpha][:self.Ne]*self.C[alpha][:self.Ne])
+			for beta in range(alpha):
 				D[alpha][beta] = np.sum(self.C[alpha][:self.Ne]*self.C[beta][:self.Ne])
-				#D[alpha][beta] = np.sum(self.C[:self.Ne, alpha]*self.C[:self.Ne, beta])
+				D[beta][alpha] = D[alpha][beta]
 		return D
 
 
@@ -88,19 +88,20 @@ class HartreeFock:
 
 
 	def V(self, p, q, r, s):
+		'''
+		p, q, r, s : int symbol for MO
+		coulomb integral
+		<p q|v|r s>
+		'''
 		V = 0.0
 		for alpha in range(self.basis.N):
 			cp = self._C[alpha][p]
-			#cp = self._C[p, alpha]
 			for beta in range(self.basis.N):
 				cp_cr = cp*self._C[beta][r]
-				#cp_cr = cp*self._C[r, beta]
 				for gamma in range(self.basis.N):
 					cp_cq_cr = cp_cr*self._C[gamma][q]
-					#cp_cq_cr = cp_cr*self._C[q, gamma]
 					for delta in range(self.basis.N):
 						cp_cq_cr_cs = cp_cq_cr*self._C[delta][s]
-						#cp_cq_cr_cs = cp_cq_cr*self._C[s, delta]
 						V += cp_cq_cr_cs*self.basis.V(alpha, gamma, beta, delta)
 		return V
 
@@ -115,16 +116,12 @@ class HartreeFock:
 		V_AS = 0.0
 		for alpha in range(self.basis.N):
 			cp = self._C[alpha][p]
-			#cp = self._C[p, alpha]
 			for beta in range(self.basis.N):
 				cp_cr = cp*self._C[beta][r]
-				#cp_cr = cp*self._C[r, beta]
 				for gamma in range(self.basis.N):
 					cp_cq_cr = cp_cr*self._C[gamma][q]
-					#cp_cq_cr = cp_cr*self._C[q, gamma]
 					for delta in range(self.basis.N):
 						cp_cq_cr_cs = cp_cq_cr*self._C[delta][s]
-						#cp_cq_cr_cs = cp_cq_cr*self._C[s, delta]
 						V_AS += cp_cq_cr_cs*self.basis.V_AS(alpha, gamma, beta, delta)
 		return V_AS
 

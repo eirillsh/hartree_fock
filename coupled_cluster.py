@@ -5,6 +5,8 @@ class CoupledCluster(HartreeFock):
 	'''
 	Class for Coupled Cluster calculations
 	Limited to Coupled Cluster Doubles
+
+	Methods require that solve() is called first.
 	'''
 
 	def __init__(self, basis, Ne):
@@ -19,15 +21,18 @@ class CoupledCluster(HartreeFock):
 		'''
 		Coupled Cluster energy
 		'''	
-		dE = 0.0
+		E_HF = CCD = 0.0
+		for alpha in range(self.basis.N):
+			D_alpha = np.sum(self.C[alpha][:self.Ne]*self.C[alpha][:self.Ne])
+			E_HF += D_alpha*self.basis.energy(alpha)
+
 		for i in range(self.Ne):
 			for j in range(i):
+				E_HF += self._V_AS[i, j, i, j]
 				for a in range(self.Ne, self.basis.N):
 					a_idx = a - self.Ne
-					for b in range(self.Ne, a):
-						b_idx = b - self.Ne
-						dE += self._V_AS[i, j, a, b]*self._t[i, j, a_idx, b_idx]
-		return HartreeFock.binding_energy(self) + dE
+					CCD += np.sum(self._t[i, j, a_idx, :a_idx]*self._V_AS[i, j, a, self.Ne:a])
+		return E_HF + CCD
 
 	
 	# override
@@ -98,24 +103,21 @@ class CoupledCluster(HartreeFock):
 			for l in range(k):
 				for c in range(self.Ne, self.basis.N):
 					c_idx = c - self.Ne
-					for d in range(self.Ne, c):
-						d_idx = d - self.Ne
 
-						coeff  = self._t[i, j, c_idx, d_idx]*self._t[k, l, a_idx, b_idx]
+					coeff  = self._t[i, j, c_idx, :c_idx]*self._t[k, l, a_idx, b_idx]
 
-						coeff += 4*self._t[i, k, a_idx, c_idx]*self._t[j, l, b_idx, d_idx]
-						coeff -= 4*self._t[j, k, a_idx, c_idx]*self._t[i, l, b_idx, d_idx]
+					coeff += 4*self._t[i, k, a_idx, c_idx]*self._t[j, l, b_idx, :c_idx]
+					coeff -= 4*self._t[j, k, a_idx, c_idx]*self._t[i, l, b_idx, :c_idx]
 
-						coeff -= 2*self._t[i, k, d_idx, c_idx]*self._t[l, j, a_idx, b_idx]
-						coeff += 2*self._t[j, k, d_idx, c_idx]*self._t[l, i, a_idx, b_idx]
+					coeff -= 2*self._t[i, k, :c_idx, c_idx]*self._t[l, j, a_idx, b_idx]
+					coeff += 2*self._t[j, k, :c_idx, c_idx]*self._t[l, i, a_idx, b_idx]
 
-						coeff -= 2*self._t[l, k, a_idx, c_idx]*self._t[i, j, d_idx, b_idx]
-						coeff += 2*self._t[l, k, b_idx, c_idx]*self._t[i, j, d_idx, a_idx]
-						t_ij_ab += coeff*self._V_AS[k, l, c, d]
+					coeff -= 2*self._t[l, k, a_idx, c_idx]*self._t[i, j, :c_idx, b_idx]
+					coeff += 2*self._t[l, k, b_idx, c_idx]*self._t[i, j, :c_idx, a_idx]
+					t_ij_ab += np.sum(coeff*self._V_AS[k, l, c, self.Ne:c])
 		return t_ij_ab/self._d_epsilon[i, j, a_idx, b_idx]
 
 
-	
 	def compute_d_epsilon(self):
 		'''
 		compute all permutations of
@@ -133,7 +135,6 @@ class CoupledCluster(HartreeFock):
 			self._d_epsilon[:, :,   :, a_idx] -= self._epsilon[a]
 
 
-	
 	def t(self, i, j, a, b):
 		'''
 		i, j : labels of occupied AOs

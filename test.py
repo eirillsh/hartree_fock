@@ -169,28 +169,9 @@ def test_symmetry_V_AS_MO(HF):
 	assert MSE < 1e-12, "MO V_AS symmetry test failed"
 
 
-def test_V_AS_MO(HF):
-	MSE = 0.0
-	tol = 10
-	for p in range(HF.basis.N):
-		for q in range(p):
-			for r in range(HF.basis.N):
-				for s in range(r):
-					V_AS = HF.V(p, q, r, s) - HF.V(p, q, s, r)
-					diff = np.abs(HF.V_AS(p, q, r, s) -  V_AS)
-					assert diff < tol, f"error: V_AS({p, q, r, s}) !=  V({p, q, r, s}) - V({p, q, s, r}). Difference of {diff:.2g}."
-					MSE += diff*diff
-	MSE *= 2/HF.basis.N**4
-	print(f"\tMSE of error in MOs V_AS was {MSE:.4g}. Using Hydrogen AO with {HF.Ne} electrons")
-	#assert MSE < 1e-12, "MO V_AS symmetry test failed"
-
 
 test_symmetry_V_AS_MO(HF_He)
 test_symmetry_V_AS_MO(HF_Be)
-
-test_V_AS_MO(HF_He)
-test_V_AS_MO(HF_Be)
-
 
 
 #------TESTING COUPLED-CLUSTER------
@@ -205,7 +186,7 @@ def test_inital_amplitudes(basis, Z):
 
 	diff = abs(MP.binding_energy() - CCD.binding_energy())
 	print(f"\tDifference between MP energy and CCD with one iteration is {diff:.4g} using {Z} electrons.")
-	assert diff < 1e-16, "Difference between MP energy and CCD with one iteration should be zero."
+	assert diff < 1e-12, "Difference between MP energy and CCD with one iteration should be zero."
 
 
 test_inital_amplitudes(basis_He, 2)
