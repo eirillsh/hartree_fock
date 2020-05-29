@@ -8,14 +8,14 @@ import matplotlib.pyplot as plt
 
 
 def plot_MO_energies(E, atom, Z):
-	x = range(len(E))
+	x = range(1, len(E)+1)
 	y_tick = [E[i] for i in range(0, len(E), 2)]
 	plt.plot(x[:Z], E[:Z], ".", color="black", markersize=15)
 	plt.plot(x[Z:], E[Z:], ".", color="darkgrey", markersize=15)
 	plt.xticks(x, [r"$\psi_%d$" %i for i in x], fontsize=16)
 	plt.yticks(y_tick, ["%.3f" %y for y in y_tick], fontsize=15)
 	plt.grid()
-	plt.xlabel(r"$\psi_i$", fontsize=17)
+	plt.xlabel(r"$\psi_p$", fontsize=17)
 	plt.ylabel(r"MO energy [a.u]", fontsize=17)
 	plt.tight_layout()
 	plt.savefig("results/" + atom + ".pdf")
